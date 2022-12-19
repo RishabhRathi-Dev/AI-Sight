@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/college/Community Project (EPICS)/Project/AI Sight/app/src/main/res/layout/activity_direction_and_warning_reader.xml" value="0.1265625" />
+        <entry key="..\:/college/Community Project (EPICS)/Project/AI Sight/app/src/main/res/layout/activity_search_or_freeroam.xml" value="0.264" />
+        <entry key="..\:/college/Community Project (EPICS)/Project/AI Sight/app/src/main/res/layout/activity_starting.xml" value="0.27447916666666666" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
