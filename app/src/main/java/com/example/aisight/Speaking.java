@@ -22,7 +22,7 @@ public class Speaking {
         });
     }
 
-    public void say(String text) {
+    private void say(String text) {
         textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
     }
 
