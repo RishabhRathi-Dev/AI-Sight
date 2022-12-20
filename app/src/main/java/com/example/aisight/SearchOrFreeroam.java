@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class SearchOrFreeroam extends AppCompatActivity {
-    private ImageView iv_mic;
-    private TextView tv_Speech_to_text;
-    private static final int REQUEST_CODE_SPEECH_INPUT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +34,9 @@ public class SearchOrFreeroam extends AppCompatActivity {
         final EditText editText = findViewById(R.id.editText);
 
         final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+
+        Speaking alert = new Speaking(SearchOrFreeroam.this, "Hold the button and speak destination");
+        // This should fly as this object is being created and not referenced only once it was created so gc should take care of it hopefully preventing memory overflow
 
 
         final Intent mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -88,6 +88,7 @@ public class SearchOrFreeroam extends AppCompatActivity {
                     editText.setText(matches.get(0));
 
                 Intent toDirections = new Intent(getApplicationContext(), DirectionReader.class);
+                toDirections.putExtra("Destination", editText.getText().toString());
                 startActivity(toDirections);
             }
 

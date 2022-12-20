@@ -23,23 +23,11 @@ public class DirectionReader extends AppCompatActivity {
         Text = findViewById(R.id.Text);
         btnText = findViewById(R.id.btnText);
 
-        // create an object textToSpeech and adding features into it
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-
-                if(i!=TextToSpeech.ERROR){
-                    // To Choose language of speech
-                    textToSpeech.setLanguage(Locale.getDefault()); // sets language of device
-                }
-            }
-        });
-
         // Adding OnClickListener
         btnText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textToSpeech.speak(Text.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+                Speaking read = new Speaking(DirectionReader.this, Text.getText().toString());
             }
         });
     }
