@@ -9,10 +9,11 @@ import org.jsoup.select.Elements;
 
 import java.io.Console;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Navigation extends AsyncTask <String, Void, String> {
 
-    private String[] directions;
+    private ArrayList<String> directions;
 
     public Navigation() {
 
@@ -40,27 +41,18 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     }
 
-    public Double[] convertedToLatLong(String coordinates){
+    public ArrayList<Double> convertedToLatLong(String coordinates){
         // This function converts extracted coordinates into usable format
 
-        Double[] coords = new Double[2];
-
-
-
+        ArrayList<Double> coords = new ArrayList<Double>();
+        String North = coordinates.substring(0, coordinates.indexOf('°'));
+        String inter = coordinates.substring(coordinates.indexOf(','));
+        String East = inter.substring(inter.indexOf(' ')+1, inter.indexOf('°'));
+        coords.add(Double.parseDouble(North));
+        coords.add(Double.parseDouble(East));
         return coords;
     }
 
-    public void getCoordinateOfDestination (String Destination) throws IOException {
-        // Webscrapes the coordinate of Destination
-        String coordi;
-        String url = "https://www.google.com/search?q="+Destination;
-        Document doc = Jsoup.connect(url).get();
-        // Get material in div class = Z0LcW t2b5Cf
-        Elements coordinates = doc.getElementsByClass("Z0LcW t2b5Cf");
-        for (Element coords : coordinates) {
-            coordi = coords.text();
-        }
-    }
 
     public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(){
         // Calculates the difference between two given coordinates
@@ -70,7 +62,7 @@ public class Navigation extends AsyncTask <String, Void, String> {
         // Determines weather to call for update sound or not
     }
 
-    public String[] getDirections(){
+    public ArrayList<String> getDirections(){
         return directions;
     }
 }

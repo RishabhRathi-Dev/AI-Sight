@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
@@ -19,7 +20,7 @@ public class DirectionReader extends AppCompatActivity {
     EditText Text;
     Button btnText;
     TextToSpeech textToSpeech;
-    Double[] DestinationCoords;
+    ArrayList<Double> DestinationCoords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,15 @@ public class DirectionReader extends AppCompatActivity {
         AsyncTask<String, Void, String> sCoords = n.execute(Destination);
         try {
             String result = sCoords.get();
-            DestinationCoords = n.convertedToLatLong(result);
+            if (result != null) {
+                DestinationCoords = n.convertedToLatLong(result);
+            }
+            else {
+                Speaking wrongInput = new Speaking(DirectionReader.this, "Please Try Again");
+                Intent back = new Intent(DirectionReader.this, SearchOrFreeroam.class);
+                startActivity(back);
+                finish();
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
