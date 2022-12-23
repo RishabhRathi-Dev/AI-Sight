@@ -1,5 +1,7 @@
 package com.example.aisight;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -90,6 +92,7 @@ public class SearchOrFreeroam extends AppCompatActivity {
                 Intent toDirections = new Intent(getApplicationContext(), DirectionReader.class);
                 toDirections.putExtra("Destination", editText.getText().toString());
                 startActivity(toDirections);
+                finish();
             }
 
             @Override
@@ -103,13 +106,24 @@ public class SearchOrFreeroam extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            // Second Search Button
+            @Override
+            public void onClick(View view) {
+                Intent toDirections = new Intent(getApplicationContext(), DirectionReader.class);
+                toDirections.putExtra("Destination", editText.getText().toString());
+                startActivity(toDirections);
+                finish();
+            }
+        });
+
         findViewById(R.id.button).setOnTouchListener(new View.OnTouchListener() {
+            // Mic button
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_UP:
                         mSpeechRecognizer.stopListening();
-                        editText.setHint("You will see input here");
                         break;
 
                     case MotionEvent.ACTION_DOWN:
@@ -134,4 +148,5 @@ public class SearchOrFreeroam extends AppCompatActivity {
             }
         }
     }
+
 }

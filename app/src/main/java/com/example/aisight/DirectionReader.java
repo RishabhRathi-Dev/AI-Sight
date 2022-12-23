@@ -3,12 +3,19 @@ package com.example.aisight;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +28,11 @@ public class DirectionReader extends AppCompatActivity {
     Button btnText;
     TextToSpeech textToSpeech;
     ArrayList<Double> DestinationCoords;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private double wayLatitude = 0.0, wayLongitude = 0.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,5 +69,25 @@ public class DirectionReader extends AppCompatActivity {
                 Speaking read = new Speaking(DirectionReader.this, Text.getText().toString());
             }
         });
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10 * 1000);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        wayLatitude = location.getLatitude();
+                        wayLongitude = location.getLongitude();
+                        n.distanceBetweenCurrentGPSCoordinateAndLatestDirection(wayLongitude, wayLatitude);
+                    }
+                }
+            }
+        };
     }
 }
