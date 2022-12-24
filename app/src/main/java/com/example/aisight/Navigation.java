@@ -104,6 +104,7 @@ public class Navigation extends AsyncTask <String, Void, String> {
         dist = dist * 1.609344;
 
         if (dist < 0.1){
+            // ~ 100 m
             callDirectionAlert();
         }
     }
@@ -119,6 +120,7 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public void callDirectionAlert(){
         // Calls direction update
+
 
     }
 
