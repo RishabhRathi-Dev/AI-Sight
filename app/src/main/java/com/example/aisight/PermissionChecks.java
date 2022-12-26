@@ -24,9 +24,7 @@ public class PermissionChecks extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.INTERNET,
-            Manifest.permission.VIBRATE
+            Manifest.permission.RECORD_AUDIO
     };
 
 
@@ -83,12 +81,10 @@ public class PermissionChecks extends AppCompatActivity {
                     boolean backgroundlocationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
                     boolean cameraAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
                     boolean recordaudioAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
-                    boolean internetAccepted = grantResults[5] == PackageManager.PERMISSION_GRANTED;
-                    boolean vibrateAccepted = grantResults[6] == PackageManager.PERMISSION_GRANTED;
 
 
 
-                    if (finelocationAccepted && coarselocationAccepted && backgroundlocationAccepted && cameraAccepted && recordaudioAccepted && internetAccepted && vibrateAccepted) {
+                    if (finelocationAccepted && coarselocationAccepted && backgroundlocationAccepted && cameraAccepted && recordaudioAccepted) {
                         Log.d("Permissions", "All accepted");
                     }
                     else {
