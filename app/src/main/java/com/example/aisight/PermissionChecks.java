@@ -18,9 +18,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class PermissionChecks extends AppCompatActivity {
 
-    // Known Issues:
-    // backgroundLocationService is not getting asked as it is only needed for android version 9+
-
     private static final int PERMISSION_REQUEST_CODE = 200;
 
     private String[] Permissions = {
