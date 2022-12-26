@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,17 +23,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class SearchOrFreeroam extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_or_freeroam);
 
-        checkPermission();
+        // checkPermission();
+
 
         final EditText editText = findViewById(R.id.editText);
 
@@ -168,8 +174,15 @@ public class SearchOrFreeroam extends AppCompatActivity {
                 finish();
             }
 
+            if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)){
+                requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 200);
+                finish();
+            }
+
 
         }
     }
+
+
 
 }

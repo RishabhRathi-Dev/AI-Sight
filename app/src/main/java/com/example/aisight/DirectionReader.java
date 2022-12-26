@@ -2,25 +2,22 @@ package com.example.aisight;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class DirectionReader extends AppCompatActivity {
@@ -33,6 +30,8 @@ public class DirectionReader extends AppCompatActivity {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
+    private LocationService mLocationService;
+    private Intent mServiceIntent;
 
 
     @Override
@@ -50,11 +49,13 @@ public class DirectionReader extends AppCompatActivity {
             String result = sCoords.get();
             if (result != null) {
                 DestinationCoords = n.convertedToLatLong(result);
+                startServiceFunc();
             }
             else {
                 Speaking wrongInput = new Speaking(DirectionReader.this, "Please Try Again");
                 Intent back = new Intent(DirectionReader.this, SearchOrFreeroam.class);
                 startActivity(back);
+                stopServiceFunc();
                 finish();
             }
 
@@ -73,24 +74,39 @@ public class DirectionReader extends AppCompatActivity {
             }
         });
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 1000);
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    if (location != null) {
-                        wayLatitude = location.getLatitude();
-                        wayLongitude = location.getLongitude();
-                        n.distanceBetweenCurrentGPSCoordinateAndLatestDirection(wayLongitude, wayLatitude);
-                    }
-                }
-            }
-        };
     }
+
+    private void startServiceFunc(){
+        mLocationService = new LocationService();
+        mServiceIntent = new Intent(this, mLocationService.getClass());
+        if (!isMyServiceRunning(mLocationService.getClass(), this)) {
+            startService(mServiceIntent);
+            Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Service Already Running", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopServiceFunc(){
+        mLocationService = new LocationService();
+        mServiceIntent = new Intent(this, mLocationService.getClass());
+        if (isMyServiceRunning(mLocationService.getClass(), this)) {
+            stopService(mServiceIntent);
+            Toast.makeText(this, "Service stopped!!", Toast.LENGTH_SHORT).show();
+            //saveLocation(); // explore it by your self
+        } else {
+            Toast.makeText(this, "Service is already stopped!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass, DirectionReader directionReader) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
