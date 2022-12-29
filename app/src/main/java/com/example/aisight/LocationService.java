@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -23,6 +22,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -34,6 +37,7 @@ public class LocationService extends Service {
     FusedLocationProviderClient fusedLocationClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
+    Navigation navigation = new Navigation();
 
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -80,6 +84,20 @@ public class LocationService extends Service {
                         "Lat: "+Double.toString(location.getLatitude()) + '\n' +
                                 "Long: " + Double.toString(location.getLongitude()), Toast.LENGTH_LONG).show();
 
+                locationArrayList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+                try {
+                    navigation.distanceBetweenCurrentGPSCoordinateAndLatestDirection(location.getLongitude(), location.getLatitude());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (java.lang.NullPointerException e){
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+               /* for (Location location : locationResult.getLocations()) {
+                  location
+                }*/
 
             }
         };
@@ -131,4 +149,5 @@ public class LocationService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 }

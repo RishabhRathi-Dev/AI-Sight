@@ -1,3 +1,4 @@
+
 plugins {
     id 'com.android.application'
 }
@@ -15,10 +16,22 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
+
     configurations.all {
         resolutionStrategy.dependencySubstitution {
             substitute module('org.hamcrest:hamcrest-core:1.1') with module('junit:junit:4.10')
         }
+
+
+        exclude group: "com.googlecode.guava-osgi", module: "guava-osgi"
+        exclude group: "javax.inject", module: "javax.inject"
+        exclude group: "org.jvnet", module: "tiger-types"
+        exclude group: "javax.activation", module: "activation"
+        exclude group: "org.glassfish.hk2", module: "hk2-utils"
+
     }
 
     buildTypes {
@@ -28,6 +41,7 @@ android {
         }
     }
 
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -36,9 +50,20 @@ android {
 
 dependencies {
     // https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api
-    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+    //implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    // https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client
+    //implementation 'org.glassfish.jersey.core:jersey-client:2.0-m04'
+    // https://mvnrepository.com/artifact/org.glassfish.jersey.inject/jersey-hk2
+    //implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.0'
+    // https://mvnrepository.com/artifact/javax.activation/activation
+    //implementation 'javax.activation:activation:1.1.1'
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    //implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+
+
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -48,4 +73,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
 }

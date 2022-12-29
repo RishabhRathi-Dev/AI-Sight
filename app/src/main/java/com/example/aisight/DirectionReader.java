@@ -50,6 +50,7 @@ public class DirectionReader extends AppCompatActivity {
             if (result != null) {
                 DestinationCoords = n.convertedToLatLong(result);
                 startServiceFunc();
+                //System.out.println(mLocationService.getLatest());
             }
             else {
                 Speaking wrongInput = new Speaking(DirectionReader.this, "Please Try Again");
