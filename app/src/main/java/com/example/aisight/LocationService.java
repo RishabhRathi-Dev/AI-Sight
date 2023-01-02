@@ -86,7 +86,7 @@ public class LocationService extends Service {
 
                 locationArrayList.add(new LatLng(location.getLatitude(), location.getLongitude()));
                 try {
-                    navigation.distanceBetweenCurrentGPSCoordinateAndLatestDirection(location.getLongitude(), location.getLatitude());
+                    navigation.distanceBetweenCurrentGPSCoordinateAndLatestDirection(location.getLongitude(), location.getLatitude(), LocationService.this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (java.lang.NullPointerException e){

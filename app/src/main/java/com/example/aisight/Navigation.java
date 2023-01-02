@@ -1,5 +1,7 @@
 package com.example.aisight;
 
+import android.app.Activity;
+import android.app.Service;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -28,6 +30,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public static double destinationLat;
     public static double destinationLon;
+
+    APITalker apiTalker = new APITalker();
 
 
     public Navigation() {
@@ -63,42 +67,11 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     }
 
-    public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat) throws JSONException, IOException {
+    public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
 
-        //Client client = ClientBuilder.newClient();
-        JSONObject coordinates = new JSONObject();
-        JSONArray topArray = new JSONArray();
-        JSONArray current = new JSONArray();
-        JSONArray dest = new JSONArray();
-
-        current.put(clon);
-        current.put(clat);
-
-        dest.put(dlon);
-        dest.put(dlat);
-
-        topArray.put(current);
-        topArray.put(dest);
-
-        coordinates.put("coordinates", topArray);
-        /*
-        Entity<String> payload = Entity.json(coordinates.toString());
-
-        Response response = client.target("https://api.openrouteservice.org/v2/directions/foot-walking/json")
-                .request()
-                .header("Authorization", "5b3ce3597851110001cf6248157cf6b693c34e94b6420ed637c30b4e")
-                .header("Accept", "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8")
-                .header("Content-Type", "application/json; charset=utf-8")
-                .post(payload);
-
-        System.out.println("status: " + response.getStatus());
-        System.out.println("headers: " + response.getHeaders());
-        System.out.println("body:" + response.readEntity(String.class));
-
-         */
 
         // TODO: Make another class to get respose from api
-
+        apiTalker.talk(dlon, dlat, clon, clat, asker);
 
     }
 
@@ -117,10 +90,10 @@ public class Navigation extends AsyncTask <String, Void, String> {
     }
 
 
-    public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(double lon1, double lat1) throws JSONException, IOException {
+    public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(double lon1, double lat1, LocationService asker) throws JSONException, IOException {
         // Calculates the difference between two given coordinates
         if (directions == null){
-            getDirectionsAndSteps(destinationLon, destinationLat, lon1, lat1);
+            getDirectionsAndSteps(destinationLon, destinationLat, lon1, lat1, asker);
         }
         else {
             double lon2 = stepsCoordinateStack.get(0).get(0);
