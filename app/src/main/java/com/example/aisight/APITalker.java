@@ -3,11 +3,19 @@ package com.example.aisight;
 import android.app.Service;
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -31,6 +39,12 @@ public class APITalker {
 
     public APITalker() {}
 
+    public void resposeParser(String response) throws ParseException, JSONException {
+        Gson gson = new Gson();
+        APIParser apiParser = gson.fromJson(response, APIParser.class);
+
+    }
+
     public ArrayList<String> talk(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
         // TODO: parse response and return direction and also limit calling
 
@@ -44,6 +58,9 @@ public class APITalker {
         topArray.put(dest);
 
         coordinates.put("coordinates", topArray);
+        coordinates.put("maneuvers", "true");
+        coordinates.put("geometry", "false");
+
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
         RequestBody body = RequestBody.create(coordinates.toString(), JSON);
@@ -58,7 +75,11 @@ public class APITalker {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d("response", response.body().string());
+                try {
+                    resposeParser(response.body().string());
+                } catch (ParseException | JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
