@@ -31,6 +31,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
     public static double destinationLat;
     public static double destinationLon;
 
+    private boolean calledAPI = false;
+
     APITalker apiTalker = new APITalker();
 
 
@@ -69,8 +71,6 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
 
-
-        // TODO: Make another class to get respose from api
         apiTalker.talk(dlon, dlat, clon, clat, asker);
 
     }
@@ -92,8 +92,9 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(double lon1, double lat1, LocationService asker) throws JSONException, IOException {
         // Calculates the difference between two given coordinates
-        if (directions == null){
+        if (!calledAPI){
             getDirectionsAndSteps(destinationLon, destinationLat, lon1, lat1, asker);
+            calledAPI = true;
         }
         else {
             double lon2 = stepsCoordinateStack.get(0).get(0);

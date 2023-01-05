@@ -32,20 +32,23 @@ public class APITalker {
     JSONArray current = new JSONArray();
     JSONArray dest = new JSONArray();
     private final OkHttpClient client = new OkHttpClient();
+    APIParser apiParser;
 
-    private ArrayList<String> directions;
-    private ArrayList<ArrayList<Double>> stepsCoordinateStack;
+    private ArrayList<String> directions = new ArrayList<String>();
+    private ArrayList<JSONArray> stepsCoordinateStack = new ArrayList<JSONArray>();
 
 
     public APITalker() {}
 
     public void resposeParser(String response) throws ParseException, JSONException {
-        Gson gson = new Gson();
-        APIParser apiParser = gson.fromJson(response, APIParser.class);
+
+        apiParser = new APIParser(response);
+        directions = apiParser.getInstructions();
+        stepsCoordinateStack = apiParser.getLocations();
 
     }
 
-    public ArrayList<String> talk(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
+    public void talk(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
         // TODO: parse response and return direction and also limit calling
 
         current.put(clon);
@@ -88,9 +91,14 @@ public class APITalker {
             }
         });
 
-
-        return directions;
     }
 
+    public ArrayList<JSONArray> getStepsCoordinateStack() {
+        return stepsCoordinateStack;
+    }
+
+    public ArrayList<String> getDirections() {
+        return directions;
+    }
 
 }

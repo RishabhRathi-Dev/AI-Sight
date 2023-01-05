@@ -1,10 +1,22 @@
 package com.example.aisight;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
+import org.json.*;
 
 public class APIParser {
     // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
@@ -12,64 +24,59 @@ public class APIParser {
     /* ObjectMapper om = new ObjectMapper();
     Root root = om.readValue(myJsonString, Root.class); */
 
-    public class Engine{
-        public String version;
-        public Date build_date;
-        public Date graph_date;
+    JSONObject result;
+    JSONArray routes;
+    JSONObject underRoutes;
+    String a;
+    JSONObject summary;
+    JSONArray segments;
+
+    ArrayList<String> instructions = new ArrayList<String>();
+    ArrayList<JSONArray> locations = new ArrayList<JSONArray>();
+
+    public APIParser(String json) throws JSONException {
+        result = new JSONObject(json);
+
+        System.out.println(result.toString());
+
+        routes = result.getJSONArray("routes");
+
+        a = routes.get(0).toString();
+
+        underRoutes = new JSONObject(a);
+
+        summary = underRoutes.getJSONObject("summary");
+
+        segments = underRoutes.getJSONArray("segments");
+
+        System.out.println(segments.toString());
+
+        for (int i = 0; i < segments.length(); i++)
+        {
+            JSONArray steps = segments.getJSONObject(i).getJSONArray("steps");
+
+            for (int j = 0; j < steps.length(); j++) {
+                String instruction = steps.getJSONObject(j).getString("instruction");
+                JSONObject maneuver = steps.getJSONObject(j).getJSONObject("maneuver");
+                JSONArray location = maneuver.getJSONArray("location");
+
+                if (instruction != null && location != null) {
+                    instructions.add(instruction);
+                    locations.add(location);
+                }
+            }
+
+        }
+
+
     }
 
-    public class Maneuver{
-        public ArrayList<Double> location;
-        public int bearing_before;
-        public int bearing_after;
+    public ArrayList<JSONArray> getLocations() {
+        return locations;
     }
 
-    public class Metadata{
-        public String attribution;
-        public String service;
-        public long timestamp;
-        public Query query;
-        public Engine engine;
-    }
-
-    public class Query{
-        public ArrayList<ArrayList<Double>> coordinates;
-        public String profile;
-        public String format;
-        public boolean maneuvers;
-    }
-
-    public class Root{
-        public ArrayList<Route> routes;
-        public ArrayList<Double> bbox;
-        public Metadata metadata;
-    }
-
-    public class Route{
-        public Summary summary;
-        public ArrayList<Segment> segments;
-        public ArrayList<Double> bbox;
-    }
-
-    public class Segment{
-        public double distance;
-        public double duration;
-        public ArrayList<Step> steps;
-    }
-
-    public class Step{
-        public double distance;
-        public double duration;
-        public int type;
-        public String instruction;
-        public String name;
-        public ArrayList<Integer> way_points;
-        public Maneuver maneuver;
-    }
-
-    public class Summary{
-        public double distance;
-        public double duration;
+    public ArrayList<String> getInstructions() {
+        return instructions;
     }
 
 }
