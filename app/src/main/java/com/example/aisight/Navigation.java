@@ -140,6 +140,7 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public void callDirectionAlert(LocationService parent){
         // Calls direction update
+        // TODO: Direction reaching and removal logic
         Log.d("DIRECTION", "Alert called");
         Speaking say = new Speaking(parent, directions.get(0));
     }
