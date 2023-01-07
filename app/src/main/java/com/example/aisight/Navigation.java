@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 
 public class Navigation extends AsyncTask <String, Void, String> {
@@ -70,11 +71,15 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     }
 
-    public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
+    public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException, InterruptedException {
 
         apiTalker.talk(dlon, dlat, clon, clat, asker);
+        TimeUnit.SECONDS.sleep(4); // To give enough time to get response and arrays needed
         directions = apiTalker.getDirections();
         stepsCoordinateStack = apiTalker.getStepsCoordinateStack();
+
+        //System.out.println("NAVIGATION");
+        //System.out.println(directions.toString());
 
     }
 
@@ -93,26 +98,33 @@ public class Navigation extends AsyncTask <String, Void, String> {
     }
 
 
-    public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(double lon1, double lat1, LocationService asker) throws JSONException, IOException {
+    public void distanceBetweenCurrentGPSCoordinateAndLatestDirection(double lon1, double lat1, LocationService asker) throws JSONException, IOException, InterruptedException {
         // Calculates the difference between two given coordinates
         if (!calledAPI){
             getDirectionsAndSteps(destinationLon, destinationLat, lon1, lat1, asker);
             calledAPI = true;
         }
         else {
-            double lon2 = stepsCoordinateStack.get(0).getDouble(0);
-            double lat2 = stepsCoordinateStack.get(0).getDouble(1);
-            double theta = lon1 - lon2;
-            double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-            dist = Math.acos(dist);
-            dist = rad2deg(dist);
-            dist = dist * 60 * 1.1515;
 
-            dist = dist * 1.609344;
+            //System.out.println("ELSE CALLED");
 
-            if (dist < 0.1) {
-                // ~ 100 m
-                callDirectionAlert(asker);
+            if (!stepsCoordinateStack.isEmpty() || !directions.isEmpty()) {
+                double lon2 = stepsCoordinateStack.get(0).getDouble(0);
+                double lat2 = stepsCoordinateStack.get(0).getDouble(1);
+                double theta = lon1 - lon2;
+                double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+                dist = Math.acos(dist);
+                dist = rad2deg(dist);
+                dist = dist * 60 * 1.1515;
+
+                dist = dist * 1.609344;
+
+                System.out.println(dist);
+
+                if (dist < 0.1) {
+                    // ~ 100 m
+                    callDirectionAlert(asker);
+                }
             }
         }
     }

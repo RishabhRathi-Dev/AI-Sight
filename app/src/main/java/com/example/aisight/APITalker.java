@@ -15,6 +15,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,11 +41,14 @@ public class APITalker {
 
     public APITalker() {}
 
-    public void resposeParser(String response) throws ParseException, JSONException {
+    public void resposeParser(String response) throws ParseException, JSONException, InterruptedException {
 
         apiParser = new APIParser(response);
         directions = apiParser.getInstructions();
         stepsCoordinateStack = apiParser.getLocations();
+
+        //System.out.println("APITALKER");
+        //System.out.println(directions.toString());
 
     }
 
@@ -79,7 +83,7 @@ public class APITalker {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 try {
                     resposeParser(response.body().string());
-                } catch (ParseException | JSONException e) {
+                } catch (ParseException | JSONException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }

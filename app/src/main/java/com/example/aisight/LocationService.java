@@ -93,6 +93,8 @@ public class LocationService extends Service {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
 
                /* for (Location location : locationResult.getLocations()) {
