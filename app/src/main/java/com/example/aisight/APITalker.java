@@ -34,8 +34,8 @@ public class APITalker {
     private final OkHttpClient client = new OkHttpClient();
     APIParser apiParser;
 
-    private ArrayList<String> directions = new ArrayList<String>();
-    private ArrayList<JSONArray> stepsCoordinateStack = new ArrayList<JSONArray>();
+    private static ArrayList<String> directions = new ArrayList<String>();
+    private static ArrayList<JSONArray> stepsCoordinateStack = new ArrayList<JSONArray>();
 
 
     public APITalker() {}
@@ -49,7 +49,6 @@ public class APITalker {
     }
 
     public void talk(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
-        // TODO: parse response and return direction and also limit calling
 
         current.put(clon);
         current.put(clat);

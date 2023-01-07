@@ -31,8 +31,8 @@ public class APIParser {
     JSONObject summary;
     JSONArray segments;
 
-    ArrayList<String> instructions = new ArrayList<String>();
-    ArrayList<JSONArray> locations = new ArrayList<JSONArray>();
+    static ArrayList<String> instructions = new ArrayList<String>();
+    static ArrayList<JSONArray> locations = new ArrayList<JSONArray>();
 
     public APIParser(String json) throws JSONException {
         result = new JSONObject(json);
@@ -56,15 +56,26 @@ public class APIParser {
             JSONArray steps = segments.getJSONObject(i).getJSONArray("steps");
 
             for (int j = 0; j < steps.length(); j++) {
-                String instruction = steps.getJSONObject(j).getString("instruction");
-                JSONObject maneuver = steps.getJSONObject(j).getJSONObject("maneuver");
-                JSONArray location = maneuver.getJSONArray("location");
 
-                if (instruction != null && location != null) {
-                    instructions.add(instruction);
-                    locations.add(location);
+                JSONObject maneuver = steps.getJSONObject(j).getJSONObject("maneuver");
+                System.out.println(maneuver.toString());
+
+                try {
+                    JSONArray location = maneuver.getJSONArray("location");
+                    String instruction = steps.getJSONObject(j).getString("instruction");
+                    if (instruction != null && location != null) {
+                        instructions.add(instruction);
+                        locations.add(location);
+                    }
+
+                } catch (JSONException exception){
+
                 }
+
             }
+
+            System.out.println(instructions.toString());
+            System.out.println(locations.toString());
 
         }
 

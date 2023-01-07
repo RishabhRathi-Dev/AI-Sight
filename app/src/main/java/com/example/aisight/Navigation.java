@@ -3,6 +3,7 @@ package com.example.aisight;
 import android.app.Activity;
 import android.app.Service;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,13 +26,13 @@ import java.util.Scanner;
 
 public class Navigation extends AsyncTask <String, Void, String> {
 
-    private ArrayList<String> directions;
-    private ArrayList<ArrayList<Double>> stepsCoordinateStack;
+    private static ArrayList<String> directions = new ArrayList<>();
+    private static ArrayList<JSONArray> stepsCoordinateStack = new ArrayList<JSONArray>();
 
     public static double destinationLat;
     public static double destinationLon;
 
-    private boolean calledAPI = false;
+    private static boolean calledAPI = false;
 
     APITalker apiTalker = new APITalker();
 
@@ -72,6 +73,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
     public void getDirectionsAndSteps(double dlon, double dlat, double clon, double clat, Service asker) throws JSONException, IOException {
 
         apiTalker.talk(dlon, dlat, clon, clat, asker);
+        directions = apiTalker.getDirections();
+        stepsCoordinateStack = apiTalker.getStepsCoordinateStack();
 
     }
 
@@ -97,8 +100,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
             calledAPI = true;
         }
         else {
-            double lon2 = stepsCoordinateStack.get(0).get(0);
-            double lat2 = stepsCoordinateStack.get(0).get(0);
+            double lon2 = stepsCoordinateStack.get(0).getDouble(0);
+            double lat2 = stepsCoordinateStack.get(0).getDouble(1);
             double theta = lon1 - lon2;
             double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
             dist = Math.acos(dist);
@@ -109,7 +112,7 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
             if (dist < 0.1) {
                 // ~ 100 m
-                callDirectionAlert();
+                callDirectionAlert(asker);
             }
         }
     }
@@ -123,10 +126,10 @@ public class Navigation extends AsyncTask <String, Void, String> {
     }
 
 
-    public void callDirectionAlert(){
+    public void callDirectionAlert(LocationService parent){
         // Calls direction update
-
-
+        Log.d("DIRECTION", "Alert called");
+        Speaking say = new Speaking(parent, directions.get(0));
     }
 
     public ArrayList<String> getDirections(){
