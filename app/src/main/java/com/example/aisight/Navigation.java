@@ -37,6 +37,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     APITalker apiTalker = new APITalker();
 
+    private static int step = 0;
+
 
     public Navigation() {
 
@@ -109,8 +111,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
             //System.out.println("ELSE CALLED");
 
             if (!stepsCoordinateStack.isEmpty() || !directions.isEmpty()) {
-                double lon2 = stepsCoordinateStack.get(0).getDouble(0);
-                double lat2 = stepsCoordinateStack.get(0).getDouble(1);
+                double lon2 = stepsCoordinateStack.get(step).getDouble(0);
+                double lat2 = stepsCoordinateStack.get(step).getDouble(1);
                 double theta = lon1 - lon2;
                 double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
                 dist = Math.acos(dist);
@@ -121,8 +123,8 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
                 System.out.println(dist);
 
-                if (dist < 0.1) {
-                    // ~ 100 m
+                if (dist < 0.01) {
+                    // ~ 10 m
                     callDirectionAlert(asker);
                 }
             }
@@ -140,10 +142,12 @@ public class Navigation extends AsyncTask <String, Void, String> {
 
     public void callDirectionAlert(LocationService parent){
         // Calls direction update
-        // TODO: Direction reaching and removal logic
         Log.d("DIRECTION", "Alert called");
-        Speaking say = new Speaking(parent, directions.get(0));
+        Speaking say = new Speaking(parent, directions.get(step));
+        step++;
     }
+
+    public boolean isDirectionAvailable() {return !directions.isEmpty();}
 
     public ArrayList<String> getDirections(){
         return directions;
