@@ -14,6 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="28dp"
         android:hint="Enter Destination"
+        android:inputType="text|textPostalAddress"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textColorHint="#78909C"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,40 +22,50 @@
 
     <ImageButton
         android:id="@+id/button"
-        android:layout_width="157dp"
-        android:layout_height="178dp"
+        android:layout_width="167dp"
+        android:layout_height="109dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@android:drawable/ic_btn_speak_now"
         android:contentDescription="@android:string/search_go"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintBottom_toTopOf="@+id/camera_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="119dp"
+        android:layout_height="106dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:text="@android:string/search_go"
+        app:layout_constraintBottom_toTopOf="@+id/camera_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintHorizontal_bias="0.756"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintVertical_bias="0.159" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:name="com.example.aisight.CameraFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/camera_container"
+        class="com.example.aisight.CameraFragment"
+        android:layout_width="319dp"
+        android:layout_height="478dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
         tools:layout="@layout/fragment_camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,6 @@ package com.example.aisight
  * limitations under the License.
  */
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -48,7 +47,6 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         initPaints()
     }
 
-    @SuppressLint("ResourceType")
     private fun initPaints() {
         textBackgroundPaint.color = Color.BLACK
         textBackgroundPaint.style = Paint.Style.FILL
@@ -58,7 +56,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         textPaint.style = Paint.Style.FILL
         textPaint.textSize = 50f
 
-        boxPaint.color = ContextCompat.getColor(context!!, Color.BLACK);
+        boxPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color);
         boxPaint.strokeWidth = 8F
         boxPaint.style = Paint.Style.STROKE
     }
