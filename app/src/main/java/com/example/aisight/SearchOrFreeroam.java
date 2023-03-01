@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.aisight.databinding.ActivitySearchOrFreeroamBinding;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -30,11 +31,13 @@ import java.util.Locale;
 
 public class SearchOrFreeroam extends AppCompatActivity {
 
+    private ActivitySearchOrFreeroamBinding activitySearchOrFreeroamBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_or_freeroam);
+        activitySearchOrFreeroamBinding = ActivitySearchOrFreeroamBinding.inflate(getLayoutInflater());
+        setContentView(activitySearchOrFreeroamBinding.getRoot());
 
         // checkPermission();
 

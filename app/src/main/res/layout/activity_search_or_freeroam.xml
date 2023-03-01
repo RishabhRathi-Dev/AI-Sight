@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="28dp"
         android:hint="Enter Destination"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textColorHint="#78909C"
@@ -21,17 +21,17 @@
 
     <ImageButton
         android:id="@+id/button"
-        android:layout_width="178dp"
-        android:layout_height="232dp"
+        android:layout_width="157dp"
+        android:layout_height="178dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
         android:background="@android:drawable/ic_btn_speak_now"
         android:contentDescription="@android:string/search_go"
         android:minWidth="48dp"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText"
         tools:ignore="DuplicateSpeakableTextCheck" />
@@ -40,13 +40,21 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:text="@android:string/search_go"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:name="com.example.aisight.CameraFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        tools:layout="@layout/fragment_camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
