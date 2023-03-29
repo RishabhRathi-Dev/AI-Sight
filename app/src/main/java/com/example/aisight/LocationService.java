@@ -37,7 +37,6 @@ public class LocationService extends Service {
     FusedLocationProviderClient fusedLocationClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
-    Navigation navigation = new Navigation();
 
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -85,17 +84,6 @@ public class LocationService extends Service {
                                 "Long: " + Double.toString(location.getLongitude()), Toast.LENGTH_LONG).show();
 
                 locationArrayList.add(new LatLng(location.getLatitude(), location.getLongitude()));
-                try {
-                    navigation.distanceBetweenCurrentGPSCoordinateAndLatestDirection(location.getLongitude(), location.getLatitude(), LocationService.this);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (java.lang.NullPointerException e){
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                /* for (Location location : locationResult.getLocations()) {
                   location

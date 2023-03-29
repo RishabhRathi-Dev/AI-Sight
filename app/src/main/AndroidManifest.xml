@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -22,32 +23,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
+        <service
+            android:name=".FloatingOverMapIconService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".PermissionChecks"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SearchOrFreeroam"
-            android:exported="true">
-        </activity>
-
-        <activity
-            android:name=".DirectionReader"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
 
         <service
             android:name=".LocationService"
             android:enabled="true"
-            android:exported="true"/>
-
+            android:exported="true" />
     </application>
 
 </manifest>

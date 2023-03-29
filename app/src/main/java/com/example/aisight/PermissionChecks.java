@@ -81,7 +81,8 @@ public class PermissionChecks extends AppCompatActivity {
                     boolean backgroundlocationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
                     boolean cameraAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
                     boolean recordaudioAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
-
+                    // TODO:: Crashes here on Caused by: java.lang.ArrayIndexOutOfBoundsException: length=4; index=4
+                    //        at com.example.aisight.PermissionChecks.onRequestPermissionsResult(PermissionChecks.java:83)
 
 
                     if (finelocationAccepted && coarselocationAccepted && backgroundlocationAccepted && cameraAccepted && recordaudioAccepted) {
