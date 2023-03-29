@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +22,7 @@ public class FloatingOverMapIconService extends Service {
     private SurfaceView surfaceView;
     private String str_ride_id;
     public static final String BROADCAST_ACTION = "com.example.SearchOrFreeroam";
+    Long then = 0l;
 
     @Nullable
     @Override
@@ -85,9 +87,28 @@ public class FloatingOverMapIconService extends Service {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
+                // TODO:: This does not ends the previous navigation
                 //stopping the service
                 FloatingOverMapIconService.this.stopSelf();
                 //CurrentJobDetail.isFloatingIconServiceAlive = false;
+            }
+        });
+
+        backOnMap.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    then = (Long) System.currentTimeMillis();
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP){
+                    if(((Long) System.currentTimeMillis() - then) > 3000){
+                        Speaking say = new Speaking(FloatingOverMapIconService.this, "Calling Emergency");
+                        //TODO :: Create the implementation of a emergency message intent and some form of animation/vibration to show whether ready to send emergency
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
