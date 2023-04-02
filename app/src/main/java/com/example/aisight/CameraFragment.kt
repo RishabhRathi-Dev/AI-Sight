@@ -54,18 +54,6 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
-    override fun onResume() {
-        super.onResume()
-        // Make sure that all permissions are still present, since the
-        // user could have removed them while the app was in paused state.
-        /*
-        if (!PermissionsFragment.hasPermissions(requireContext())) {
-            Navigation.findNavController(requireActivity(), R.id.fragment_container)
-                .navigate(CameraFragmentDirections.actionCameraToPermissions())
-        }
-         */
-    }
-
     override fun onDestroyView() {
         _fragmentCameraBinding = null
         super.onDestroyView()

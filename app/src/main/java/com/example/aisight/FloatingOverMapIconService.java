@@ -77,7 +77,7 @@ public class FloatingOverMapIconService extends Service {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
         // Here is the place where you can inject whatever layout you want in the frame layout
-        layoutInflater.inflate(R.layout.custom_start_ride_back_button_over_map, frameLayout);
+        layoutInflater.inflate(R.layout.custom_start_ride_back_button_over_map, frameLayout, false);
 
         ImageView backOnMap = (ImageView) frameLayout.findViewById(R.id.custom_drawover_back_button);
         backOnMap.setOnClickListener(new View.OnClickListener() {

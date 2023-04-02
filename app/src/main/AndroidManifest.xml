@@ -24,9 +24,13 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
         <service
-            android:name=".FloatingOverMapIconService"
+            android:name=".BackgroundObjectDetectionService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".FloatingOverMapIconService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".PermissionChecks"
@@ -39,7 +43,7 @@
         </activity>
         <activity
             android:name=".SearchOrFreeroam"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <service
             android:name=".LocationService"
