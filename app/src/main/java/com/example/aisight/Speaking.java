@@ -3,6 +3,8 @@ package com.example.aisight;
 import android.app.Activity;
 import android.speech.tts.TextToSpeech;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
 public class Speaking {
@@ -37,6 +39,20 @@ public class Speaking {
     }
 
     public Speaking(FloatingOverMapIconService parent, String text) {
+        textToSpeech = new TextToSpeech(parent.getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+                if(i!=TextToSpeech.ERROR){
+                    // To Choose language of speech
+                    textToSpeech.setLanguage(Locale.getDefault()); // sets language of device
+                    say(text);
+                }
+            }
+        });
+    }
+
+    public Speaking(@NotNull BackgroundObjectDetectionService parent, @NotNull String text) {
         textToSpeech = new TextToSpeech(parent.getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
