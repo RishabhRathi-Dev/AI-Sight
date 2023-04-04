@@ -23,7 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
-
+        <service
+            android:name=".BgObjectDetectionService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="camera|microphone"/>
         <service
             android:name=".BackgroundObjectDetectionService"
             android:enabled="true"

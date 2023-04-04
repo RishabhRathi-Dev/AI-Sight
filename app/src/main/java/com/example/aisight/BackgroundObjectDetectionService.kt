@@ -1,20 +1,18 @@
 package com.example.aisight
 
 import android.annotation.SuppressLint
-import android.app.Service
-import android.content.Intent
 import android.graphics.Bitmap
-import android.os.IBinder
 import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleService
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class BackgroundObjectDetectionService : Service(), ObjectDetectorHelper.DetectorListener {
+class BackgroundObjectDetectionService : LifecycleService(), ObjectDetectorHelper.DetectorListener {
 
     private val TAG = "ObjectDetectionService"
 
@@ -31,14 +29,12 @@ class BackgroundObjectDetectionService : Service(), ObjectDetectorHelper.Detecto
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate() {
+        super.onCreate()
         cameraExecutor = Executors.newSingleThreadExecutor()
         lifeCycleOwner = ServiceLifeCycleOwner()
         setUpCamera();
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null;
-    }
 
     override fun onDestroy() {
         super.onDestroy()
