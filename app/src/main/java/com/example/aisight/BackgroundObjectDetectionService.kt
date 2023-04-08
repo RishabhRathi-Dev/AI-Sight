@@ -1,10 +1,18 @@
 package com.example.aisight
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import org.tensorflow.lite.task.vision.detector.Detection
@@ -16,8 +24,6 @@ class BackgroundObjectDetectionService : LifecycleService(), ObjectDetectorHelpe
 
     private val TAG = "ObjectDetectionService"
 
-    private lateinit var lifeCycleOwner : ServiceLifeCycleOwner;
-
     private lateinit var objectDetectorHelper: ObjectDetectorHelper
     private lateinit var bitmapBuffer: Bitmap
     private var preview: Preview? = null
@@ -28,11 +34,55 @@ class BackgroundObjectDetectionService : LifecycleService(), ObjectDetectorHelpe
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
-    override fun onCreate() {
-        super.onCreate()
+    companion object {
+        fun startService(context: Context, message: String) {
+            val startIntent = Intent(context, BackgroundObjectDetectionService::class.java)
+            ContextCompat.startForegroundService(context, startIntent)
+        }
+        fun stopService(context: Context) {
+
+        }
+
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
         cameraExecutor = Executors.newSingleThreadExecutor()
-        lifeCycleOwner = ServiceLifeCycleOwner()
+
+        createNotificationChannel()
+
+        val notificationIntent = Intent(this, SearchOrFreeroam::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, notificationIntent,
+            FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(
+            this,
+            "AISIGHT"
+        )
+            .setContentTitle(getString(R.string.bg_service_title))
+            .setContentText(getString(R.string.bg_service_text))
+            .setSmallIcon(R.drawable.bg_service_icon)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        startForeground(1, notification)
+
         setUpCamera();
+
+        return START_NOT_STICKY
+    }
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel("AISIGHT", "Foreground Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT)
+            val manager = getSystemService(NotificationManager::class.java)
+            manager!!.createNotificationChannel(serviceChannel)
+        }
     }
 
 
@@ -106,7 +156,7 @@ class BackgroundObjectDetectionService : LifecycleService(), ObjectDetectorHelpe
         try {
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
-            camera = cameraProvider.bindToLifecycle(lifeCycleOwner, cameraSelector, preview, imageAnalyzer)
+            camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
 
             // Attach the viewfinder's surface provider to preview use case
             //preview?.setSurfaceProvider(fragmentCameraBinding.viewFinder.surfaceProvider)

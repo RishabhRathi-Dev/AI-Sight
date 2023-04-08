@@ -2,4 +2,6 @@
     <string name="app_name">AI Sight</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bg_service_title">AI Sight</string>
+    <string name="bg_service_text">Detection Running</string>
 </resources>
