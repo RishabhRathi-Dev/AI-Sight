@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -37,6 +38,8 @@ public class SearchOrFreeroam extends AppCompatActivity {
     private ActivitySearchOrFreeroamBinding activitySearchOrFreeroamBinding;
     private GetFloatingIconClick mGetServiceClick;
     public static boolean isFloatingIconServiceAlive = false;
+    private FragmentManager fm = getSupportFragmentManager();
+    CameraFragment fragment;
     EditText editText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class SearchOrFreeroam extends AppCompatActivity {
 
         editText = findViewById(R.id.editText);
 
-
+        fragment = (CameraFragment) fm.findFragmentById(R.id.camera_container);
 
         final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
@@ -180,13 +183,11 @@ public class SearchOrFreeroam extends AppCompatActivity {
     private void createFloatingBackButton() {
         Intent iconServiceIntent = new Intent(SearchOrFreeroam.this, FloatingOverMapIconService.class);
         //iconServiceIntent.putExtra("RIDE_ID", str_rideId);
-        Intent bgObjectDectectionIntent = new Intent(SearchOrFreeroam.this, BackgroundObjectDetectionService.class);
 
         Uri gmmIntentUri = Uri.parse("google.navigation:q="+editText.getText());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
-        startService(bgObjectDectectionIntent);
         startService(iconServiceIntent);
     }
 

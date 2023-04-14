@@ -59,6 +59,7 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         super.onDestroyView()
 
         // Shut down our background executor
+        cameraProvider?.unbindAll();
         cameraExecutor.shutdown()
     }
 
@@ -206,5 +207,10 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun packUp(){
+        cameraProvider?.unbindAll()
+        cameraProvider = null
     }
 }
