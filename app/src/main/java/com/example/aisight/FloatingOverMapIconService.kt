@@ -8,10 +8,7 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.ImageFormat
-import android.graphics.PixelFormat
+import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Build
@@ -82,6 +79,10 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
         ) {}
     }
 
+    private fun ARGBBitmap(img: Bitmap): Bitmap? {
+        return img.copy(Bitmap.Config.ARGB_8888, true)
+    }
+
     private val imageListener = ImageReader.OnImageAvailableListener { reader ->
         val image = reader?.acquireLatestImage()
 
@@ -94,8 +95,13 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
             val buffer: ByteBuffer = image.planes[0].buffer
             val bytes = ByteArray(buffer.capacity())
             buffer.get(bytes)
-            val bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
-            objectDetectorHelper.detect(bitmapImage, getRotationCompensation("0", false));
+            var bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
+
+            if (bitmapImage != null) {
+
+                bitmapImage = ARGBBitmap(bitmapImage);
+                objectDetectorHelper.detect(bitmapImage, getRotationCompensation("0", false));
+            }
         }
 
         image?.close()
@@ -319,6 +325,7 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
         imageWidth: Int
     ) {
         TODO("Not yet implemented")
+        val say:Speaking = Speaking(this, "Result")
     }
 
 
