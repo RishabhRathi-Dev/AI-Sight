@@ -188,6 +188,8 @@ public class SearchOrFreeroam extends AppCompatActivity {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
+
+        iconServiceIntent.setAction("com.example.aisight.action.START");
         startService(iconServiceIntent);
     }
 
