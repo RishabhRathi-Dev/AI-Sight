@@ -321,7 +321,15 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         imageHeight: Int,
         imageWidth: Int
     ) {
-        var say:Speaking = Speaking(this, "Result")
+        // TODO:: This code is still not running, need to get this to work
+        if (results != null) {
+            for (result in results){
+                if (result.categories[0].score > 0.65) {
+                    val cat = result.categories[0].label
+                    Speaking(this, cat)
+                }
+            }
+        }
     }
 
 

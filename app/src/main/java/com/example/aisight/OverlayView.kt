@@ -76,6 +76,12 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             val drawableRect = RectF(left, top, right, bottom)
             canvas.drawRect(drawableRect, boxPaint)
 
+            if (result.categories[0].score > 0.65) {
+                val cat = result.categories[0].label
+                Speaking(this, cat)
+            }
+
+            // TODO:: Reduce speaking to required if possible once
             // Create text to display alongside detected objects
             val drawableText =
                 result.categories[0].label + " " +

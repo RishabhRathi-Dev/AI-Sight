@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.speech.tts.TextToSpeech;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
@@ -40,6 +41,20 @@ public class Speaking {
 
     public Speaking(FloatingOverMapIconService parent, String text) {
         textToSpeech = new TextToSpeech(parent.getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+                if(i!=TextToSpeech.ERROR){
+                    // To Choose language of speech
+                    textToSpeech.setLanguage(Locale.getDefault()); // sets language of device
+                    say(text);
+                }
+            }
+        });
+    }
+
+    public Speaking(@NotNull OverlayView parent, @Nullable String text) {
+        textToSpeech = new TextToSpeech(parent.getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
 
