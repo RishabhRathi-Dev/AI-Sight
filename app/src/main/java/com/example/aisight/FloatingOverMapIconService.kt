@@ -1,10 +1,7 @@
 package com.example.aisight
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
@@ -12,6 +9,7 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Build
+import android.os.IBinder
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -19,15 +17,12 @@ import android.view.*
 import android.view.View.OnTouchListener
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LifecycleService
-import com.example.aisight.ObjectDetectorHelper.DetectorListener
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.nio.ByteBuffer
 
 
-class FloatingOverMapIconService : LifecycleService(), DetectorListener {
+class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListener {
 
     // UI
     private var wm: WindowManager? = null
@@ -112,7 +107,6 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
      * Get the angle by which an image must be rotated given the device's current
      * orientation.
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Throws(CameraAccessException::class)
     private fun getRotationCompensation(cameraId: String, isFrontFacing: Boolean): Int {
         // Get the device's current rotation relative to its "native" orientation.
@@ -128,10 +122,10 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
             .getCameraCharacteristics(cameraId)
             .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
 
-        if (isFrontFacing) {
-            rotationCompensation = (sensorOrientation + rotationCompensation) % 360
+        rotationCompensation = if (isFrontFacing) {
+            (sensorOrientation + rotationCompensation) % 360
         } else { // back-facing
-            rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360
+            (sensorOrientation - rotationCompensation + 360) % 360
         }
         return rotationCompensation
     }
@@ -171,6 +165,7 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
         objectDetectorHelper = ObjectDetectorHelper(
             context = this,
             objectDetectorListener = this)
+
         createFloatingBackButton()
         startForegroundFunction()
 
@@ -186,6 +181,10 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
 
         sendBroadcast(Intent(ACTION_STOPPED))
         windowManager!!.removeView(frameLayout)
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
     }
 
     private fun start() {
@@ -221,13 +220,11 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
                 PendingIntent.getActivity(this, 0, notificationIntent, FLAG_IMMUTABLE)
             }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE)
-            channel.lightColor = Color.BLUE
-            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            nm.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE)
+        channel.lightColor = Color.BLUE
+        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.createNotificationChannel(channel)
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getText(R.string.app_name))
@@ -315,7 +312,7 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
 
 
     override fun onError(error: String) {
-        TODO("Not yet implemented")
+        Log.e("ObjectDetection", error)
     }
 
     override fun onResults(
@@ -324,8 +321,7 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
         imageHeight: Int,
         imageWidth: Int
     ) {
-        TODO("Not yet implemented")
-        val say:Speaking = Speaking(this, "Result")
+        var say:Speaking = Speaking(this, "Result")
     }
 
 
@@ -333,8 +329,7 @@ class FloatingOverMapIconService : LifecycleService(), DetectorListener {
     private fun createFloatingBackButton() {
 
         //CurrentJobDetail.isFloatingIconServiceAlive = true;
-        val LAYOUT_FLAG: Int
-        LAYOUT_FLAG = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val LAYOUT_FLAG: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {
             WindowManager.LayoutParams.TYPE_PHONE
