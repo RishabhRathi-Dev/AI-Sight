@@ -404,7 +404,7 @@ class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.Dete
             } else if (event.action == MotionEvent.ACTION_UP) {
                 if (System.currentTimeMillis() - then > 3000) {
                     val say = Speaking(this@FloatingOverMapIconService, "Calling Emergency")
-                    //TODO :: Create the implementation of a emergency message intent and some form of animation/vibration to show whether ready to send emergency
+                    //TODO :: Create the implementation of a emergency message intent
                     return@OnTouchListener true
                 }
             }
