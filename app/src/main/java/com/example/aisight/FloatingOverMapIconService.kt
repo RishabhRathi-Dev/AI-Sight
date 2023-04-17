@@ -1,7 +1,10 @@
 package com.example.aisight
 
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
@@ -9,7 +12,8 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Build
-import android.os.IBinder
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -18,11 +22,12 @@ import android.view.View.OnTouchListener
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.nio.ByteBuffer
 
 
-class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListener {
+class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.DetectorListener {
 
     // UI
     private var wm: WindowManager? = null
@@ -43,6 +48,9 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
     // Image Rotation
 
     private val ORIENTATIONS = SparseIntArray()
+
+    // Result
+    private var came = HashMap<String, Int>()
 
     init {
         ORIENTATIONS.append(Surface.ROTATION_0, 0)
@@ -183,9 +191,12 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         windowManager!!.removeView(frameLayout)
     }
 
+    /*
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
+
+     */
 
     private fun start() {
 
@@ -325,9 +336,20 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         // TODO:: This code is still not running, need to get this to work
         if (results != null) {
             for (result in results){
-                if (result.categories[0].score > 0.65) {
-                    val cat = result.categories[0].label
+                val cat = result.categories[0].label
+                if (result.categories[0].score > 0.65 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
+                    //println(cat);
+                    came[cat] = 1
                     Speaking(this, cat)
+                    //println(came.toString())
+                }
+
+                for ((k, v) in came){
+                    if (v > 50) {
+                        came[k] = 0
+                    } else {
+                        came[k] = v + 1
+                    }
                 }
             }
         }
@@ -370,8 +392,15 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
             //CurrentJobDetail.isFloatingIconServiceAlive = false;
         })
         backOnMap.setOnTouchListener(OnTouchListener { v, event ->
+            val v = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            if (System.currentTimeMillis() - then > 3000){
+                v.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.EFFECT_HEAVY_CLICK));
+            } else {
+                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
             if (event.action == MotionEvent.ACTION_DOWN) {
                 then = System.currentTimeMillis()
+
             } else if (event.action == MotionEvent.ACTION_UP) {
                 if (System.currentTimeMillis() - then > 3000) {
                     val say = Speaking(this@FloatingOverMapIconService, "Calling Emergency")
