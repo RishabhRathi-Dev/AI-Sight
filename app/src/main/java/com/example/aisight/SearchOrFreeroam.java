@@ -128,7 +128,6 @@ public class SearchOrFreeroam extends AppCompatActivity {
             // Second Search Button
             @Override
             public void onClick(View view) {
-                //TODO: Create the new intent here
                 createFloatingBackButton();
             }
         });

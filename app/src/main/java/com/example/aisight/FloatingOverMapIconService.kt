@@ -220,7 +220,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
                 PendingIntent.getActivity(this, 0, notificationIntent, FLAG_IMMUTABLE)
             }
 
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE)
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
         channel.lightColor = Color.BLUE
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -258,6 +258,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
                 // Set some additional parameters for the request
                 set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                 set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+                //set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(5, 10))
             }
 
             // Prepare CameraCaptureSession

@@ -35,6 +35,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     private var bounds = Rect()
 
+    private var came = HashMap<String, Int>()
+
     init {
         initPaints()
     }
@@ -76,12 +78,23 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             val drawableRect = RectF(left, top, right, bottom)
             canvas.drawRect(drawableRect, boxPaint)
 
-            if (result.categories[0].score > 0.65) {
-                val cat = result.categories[0].label
+            // Speaking
+            val cat = result.categories[0].label
+            if (result.categories[0].score > 0.65 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
+                //println(cat);
+                came[cat] = 1
                 Speaking(this, cat)
+                //println(came.toString())
             }
 
-            // TODO:: Reduce speaking to required if possible once
+            for ((k, v) in came){
+                if (v > 50) {
+                    came[k] = 0
+                } else {
+                    came[k] = v + 1
+                }
+            }
+
             // Create text to display alongside detected objects
             val drawableText =
                 result.categories[0].label + " " +
