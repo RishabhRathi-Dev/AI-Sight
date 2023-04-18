@@ -1,10 +1,7 @@
 package com.example.aisight
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
@@ -12,6 +9,7 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Build
+import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
@@ -22,12 +20,11 @@ import android.view.View.OnTouchListener
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LifecycleService
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.nio.ByteBuffer
 
 
-class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.DetectorListener {
+class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListener {
 
     // UI
     private var wm: WindowManager? = null
@@ -159,13 +156,14 @@ class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.Dete
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        //super.onStartCommand(intent, flags, startId)
 
         when(intent?.action) {
             ACTION_START -> start()
 
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
     override fun onCreate() {
@@ -191,12 +189,12 @@ class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.Dete
         windowManager!!.removeView(frameLayout)
     }
 
-    /*
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-     */
+
 
     private fun start() {
 
@@ -352,6 +350,8 @@ class FloatingOverMapIconService : LifecycleService(), ObjectDetectorHelper.Dete
                     }
                 }
             }
+        } else {
+            Log.d("ObjectDetection", "Null Result")
         }
     }
 
