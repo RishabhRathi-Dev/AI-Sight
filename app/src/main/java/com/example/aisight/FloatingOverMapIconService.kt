@@ -5,7 +5,10 @@ import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.ImageFormat
+import android.graphics.PixelFormat
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Build
@@ -46,8 +49,6 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
     private val ORIENTATIONS = SparseIntArray()
 
-    // Result
-    private var came = HashMap<String, Int>()
 
     init {
         ORIENTATIONS.append(Surface.ROTATION_0, 0)
@@ -79,9 +80,12 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         ) {}
     }
 
+    /*
     private fun ARGBBitmap(img: Bitmap): Bitmap? {
         return img.copy(Bitmap.Config.ARGB_8888, true)
     }
+
+     */
 
     private val imageListener = ImageReader.OnImageAvailableListener { reader ->
         val image = reader?.acquireLatestImage()
@@ -99,7 +103,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
             if (bitmapImage != null) {
 
-                bitmapImage = ARGBBitmap(bitmapImage);
+                //bitmapImage = ARGBBitmap(bitmapImage);
                 objectDetectorHelper.detect(bitmapImage, getRotationCompensation("0", false));
             }
         }
@@ -332,27 +336,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         imageWidth: Int
     ) {
         // TODO:: This code is still not running, need to get this to work
-        if (results != null) {
-            for (result in results){
-                val cat = result.categories[0].label
-                if (result.categories[0].score > 0.65 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
-                    //println(cat);
-                    came[cat] = 1
-                    Speaking(this, cat)
-                    //println(came.toString())
-                }
 
-                for ((k, v) in came){
-                    if (v > 50) {
-                        came[k] = 0
-                    } else {
-                        came[k] = v + 1
-                    }
-                }
-            }
-        } else {
-            Log.d("ObjectDetection", "Null Result")
-        }
     }
 
 

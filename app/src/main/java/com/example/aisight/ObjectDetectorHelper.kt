@@ -40,6 +40,9 @@ class ObjectDetectorHelper(
     // will not change, a lazy val would be preferable.
     private var objectDetector: ObjectDetector? = null
 
+    // Speaking
+    private var came = HashMap<String, Int>()
+
     init {
         setupObjectDetector()
     }
@@ -122,6 +125,29 @@ class ObjectDetectorHelper(
         val tensorImage = imageProcessor.process(TensorImage.fromBitmap(image))
 
         val results = objectDetector?.detect(tensorImage)
+
+
+        if (results != null) {
+            for (result in results){
+                val cat = result.categories[0].label
+                if (result.categories[0].score > 0.65 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
+                    println(cat);
+                    came[cat] = 1
+                    Speaking(this, cat)
+                    println(came.toString())
+                }
+
+                for ((k, v) in came){
+                    if (v > 50) {
+                        came[k] = 0
+                    } else {
+                        came[k] = v + 1
+                    }
+                }
+            }
+        }
+
+
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
         objectDetectorListener?.onResults(
             results,

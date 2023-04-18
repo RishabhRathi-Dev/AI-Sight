@@ -53,7 +53,7 @@ public class Speaking {
         });
     }
 
-    public Speaking(@NotNull OverlayView parent, @Nullable String text) {
+    public Speaking(@NotNull ObjectDetectorHelper parent, @Nullable String text) {
         textToSpeech = new TextToSpeech(parent.getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
