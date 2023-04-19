@@ -42,10 +42,6 @@
             android:name=".SearchOrFreeroam"
             android:exported="true" />
 
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="true" />
     </application>
 
 </manifest>

@@ -25,20 +25,6 @@ public class Speaking {
         });
     }
 
-    public Speaking(LocationService parent, String text) {
-        textToSpeech = new TextToSpeech(parent.getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-
-                if(i!=TextToSpeech.ERROR){
-                    // To Choose language of speech
-                    textToSpeech.setLanguage(Locale.getDefault()); // sets language of device
-                    say(text);
-                }
-            }
-        });
-    }
-
     public Speaking(FloatingOverMapIconService parent, String text) {
         textToSpeech = new TextToSpeech(parent.getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
