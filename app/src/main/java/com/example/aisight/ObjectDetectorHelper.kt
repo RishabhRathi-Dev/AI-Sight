@@ -130,7 +130,7 @@ class ObjectDetectorHelper(
         if (results != null) {
             for (result in results){
                 val cat = result.categories[0].label
-                if (result.categories[0].score > 0.65 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
+                if (result.categories[0].score > 0.6 && (!came.containsKey(cat) || (came.containsKey(cat) && came[cat]!! == 0))) {
                     println(cat);
                     came[cat] = 1
                     Speaking(this, cat)

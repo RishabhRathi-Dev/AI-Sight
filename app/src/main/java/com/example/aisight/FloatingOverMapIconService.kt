@@ -41,7 +41,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
     // Camera2-related stuff
     private var cameraManager: CameraManager? = null
-    private var previewSize: Size? = Size(1600, 1200)
+    private var previewSize: Size? = Size(640, 480)
     private var cameraDevice: CameraDevice? = null
     private var captureRequest: CaptureRequest? = null
     private var captureSession: CameraCaptureSession? = null
@@ -156,24 +156,29 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
         val bitmap =
             image?.let { Bitmap.createBitmap(it.width, image.height, Bitmap.Config.ARGB_8888) }
-        val allocationRgb = Allocation.createFromBitmap(rs, bitmap)
-
-        val allocationYuv = yuvBytes?.array()
-            ?.let { Allocation.createSized(rs, Element.U8(rs), it.size) }
-        if (yuvBytes != null) {
-            allocationYuv?.copyFrom(yuvBytes.array())
-        }
-
-        val scriptYuvToRgb = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs))
-        scriptYuvToRgb.setInput(allocationYuv)
-        scriptYuvToRgb.forEach(allocationRgb)
-
-        allocationRgb.copyTo(bitmap)
-
-        // Release
 
         if (bitmap != null) {
+            val allocationRgb = Allocation.createFromBitmap(rs, bitmap)
+
+            val allocationYuv = yuvBytes?.array()
+                ?.let { Allocation.createSized(rs, Element.U8(rs), it.size) }
+            if (yuvBytes != null) {
+                allocationYuv?.copyFrom(yuvBytes.array())
+            }
+
+            val scriptYuvToRgb = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs))
+            scriptYuvToRgb.setInput(allocationYuv)
+            scriptYuvToRgb.forEach(allocationRgb)
+
+            allocationRgb.copyTo(bitmap)
+
+            // Release
+
+
             objectDetectorHelper.detect(bitmap, getRotationCompensation("0", false))
+
+            allocationYuv?.destroy()
+            allocationRgb?.destroy()
         }
 
         /*
@@ -194,9 +199,6 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
         // Release
         bitmap?.recycle()
-
-        allocationYuv?.destroy()
-        allocationRgb?.destroy()
         rs?.destroy()
 
         image?.close()
