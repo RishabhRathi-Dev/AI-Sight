@@ -5,16 +5,21 @@ import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageFormat
 import android.graphics.PixelFormat
 import android.hardware.camera2.*
+import android.media.Image
 import android.media.ImageReader
 import android.os.Build
 import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicYuvToRGB
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -80,21 +85,98 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         ) {}
     }
 
-    /*
     private fun ARGBBitmap(img: Bitmap): Bitmap? {
         return img.copy(Bitmap.Config.ARGB_8888, true)
     }
 
-     */
+    private fun imageToByteBuffer(image: Image): ByteBuffer? {
+        val crop = image.cropRect
+        val width = crop.width()
+        val height = crop.height()
+        val planes = image.planes
+        val rowData = ByteArray(planes[0].rowStride)
+        val bufferSize = width * height * ImageFormat.getBitsPerPixel(ImageFormat.YUV_420_888) / 8
+        val output = ByteBuffer.allocateDirect(bufferSize)
+        var channelOffset = 0
+        var outputStride = 0
+        for (planeIndex in 0..2) {
+            if (planeIndex == 0) {
+                channelOffset = 0
+                outputStride = 1
+            } else if (planeIndex == 1) {
+                channelOffset = width * height + 1
+                outputStride = 2
+            } else if (planeIndex == 2) {
+                channelOffset = width * height
+                outputStride = 2
+            }
+            val buffer = planes[planeIndex].buffer
+            val rowStride = planes[planeIndex].rowStride
+            val pixelStride = planes[planeIndex].pixelStride
+            val shift = if (planeIndex == 0) 0 else 1
+            val widthShifted = width shr shift
+            val heightShifted = height shr shift
+            buffer.position(rowStride * (crop.top shr shift) + pixelStride * (crop.left shr shift))
+            for (row in 0 until heightShifted) {
+                val length: Int
+                if (pixelStride == 1 && outputStride == 1) {
+                    length = widthShifted
+                    buffer[output.array(), channelOffset, length]
+                    channelOffset += length
+                } else {
+                    length = (widthShifted - 1) * pixelStride + 1
+                    buffer[rowData, 0, length]
+                    for (col in 0 until widthShifted) {
+                        output.array()[channelOffset] = rowData[col * pixelStride]
+                        channelOffset += outputStride
+                    }
+                }
+                if (row < heightShifted - 1) {
+                    buffer.position(buffer.position() + rowStride - length)
+                }
+            }
+        }
+        return output
+    }
+
+
 
     private val imageListener = ImageReader.OnImageAvailableListener { reader ->
+
+
+        //Log.d(TAG, "Got image: " + image?.width + " x " + image?.height)
+
+        // Get the YUV data
         val image = reader?.acquireLatestImage()
+        val yuvBytes: ByteBuffer? = image?.let { this.imageToByteBuffer(it) }
 
-        Log.d(TAG, "Got image: " + image?.width + " x " + image?.height)
 
-        // Process image here..ideally async so that you don't block the callback
-        // ..
+        // Convert YUV to RGB
+        val rs = RenderScript.create(this)
 
+        val bitmap =
+            image?.let { Bitmap.createBitmap(it.width, image.height, Bitmap.Config.ARGB_8888) }
+        val allocationRgb = Allocation.createFromBitmap(rs, bitmap)
+
+        val allocationYuv = yuvBytes?.array()
+            ?.let { Allocation.createSized(rs, Element.U8(rs), it.size) }
+        if (yuvBytes != null) {
+            allocationYuv?.copyFrom(yuvBytes.array())
+        }
+
+        val scriptYuvToRgb = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs))
+        scriptYuvToRgb.setInput(allocationYuv)
+        scriptYuvToRgb.forEach(allocationRgb)
+
+        allocationRgb.copyTo(bitmap)
+
+        // Release
+
+        if (bitmap != null) {
+            objectDetectorHelper.detect(bitmap, getRotationCompensation("0", false))
+        }
+
+        /*
         if (image != null) {
             val buffer: ByteBuffer = image.planes[0].buffer
             val bytes = ByteArray(buffer.capacity())
@@ -103,12 +185,22 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
 
             if (bitmapImage != null) {
 
-                //bitmapImage = ARGBBitmap(bitmapImage);
+                bitmapImage = ARGBBitmap(bitmapImage);
                 objectDetectorHelper.detect(bitmapImage, getRotationCompensation("0", false));
             }
         }
 
+         */
+
+        // Release
+        bitmap?.recycle()
+
+        allocationYuv?.destroy()
+        allocationRgb?.destroy()
+        rs?.destroy()
+
         image?.close()
+
     }
 
 

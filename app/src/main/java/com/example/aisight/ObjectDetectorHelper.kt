@@ -138,7 +138,7 @@ class ObjectDetectorHelper(
                 }
 
                 for ((k, v) in came){
-                    if (v > 50) {
+                    if (v > 30) {
                         came[k] = 0
                     } else {
                         came[k] = v + 1
