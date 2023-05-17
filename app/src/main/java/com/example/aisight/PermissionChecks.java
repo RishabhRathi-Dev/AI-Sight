@@ -24,7 +24,9 @@ public class PermissionChecks extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.SEND_SMS
     };
 
 
@@ -78,14 +80,17 @@ public class PermissionChecks extends AppCompatActivity {
 
                     boolean finelocationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean coarselocationAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    boolean backgroundlocationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-                    boolean cameraAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
-                    boolean recordaudioAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
+                    boolean backgroundlocationAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean recordaudioAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
+                    boolean readContactsAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
+                    boolean sendSMSAccepted = grantResults[5] == PackageManager.PERMISSION_GRANTED;
+
                     // TODO:: Crashes here on Caused by: java.lang.ArrayIndexOutOfBoundsException: length=4; index=4
                     //        at com.example.aisight.PermissionChecks.onRequestPermissionsResult(PermissionChecks.java:83)
 
 
-                    if (finelocationAccepted && coarselocationAccepted && backgroundlocationAccepted && cameraAccepted && recordaudioAccepted) {
+                    if (finelocationAccepted && coarselocationAccepted && backgroundlocationAccepted && cameraAccepted && recordaudioAccepted && readContactsAccepted && sendSMSAccepted) {
                         Log.d("Permissions", "All accepted");
                     }
                     else {

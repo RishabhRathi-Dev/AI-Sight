@@ -20,6 +20,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicYuvToRGB
+import android.telephony.SmsManager
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -51,7 +52,6 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
     private lateinit var objectDetectorHelper: ObjectDetectorHelper
 
     // Image Rotation
-
     private val ORIENTATIONS = SparseIntArray()
 
 
@@ -68,7 +68,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
     private var frameLayout: FrameLayout? = null
     private var surfaceView: SurfaceView? = null
     private var then = 0L
-
+    private var emergency: MutableList<String> = mutableListOf()
 
     private val captureCallback = object : CameraCaptureSession.CaptureCallback() {
 
@@ -270,6 +270,7 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
             context = this,
             objectDetectorListener = this)
 
+        fillEmergency(ContactRetrievalHelper.getContactsByCustomLabel(applicationContext, "AISIGHT"))
         createFloatingBackButton()
         startForegroundFunction()
 
@@ -318,6 +319,10 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         if (camId != null) {
             cameraManager!!.openCamera(camId, stateCallback, null)
         }
+    }
+
+    private fun fillEmergency(e : MutableList<String>){
+        emergency = e;
     }
 
     private fun startForegroundFunction() {
@@ -429,12 +434,13 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
         imageHeight: Int,
         imageWidth: Int
     ) {
-        // TODO:: This code is still not running, need to get this to work
+        // Handled in the class itself
 
     }
 
 
 
+    @SuppressLint("MissingPermission", "ClickableViewAccessibility")
     private fun createFloatingBackButton() {
 
         //CurrentJobDetail.isFloatingIconServiceAlive = true;
@@ -482,7 +488,14 @@ class FloatingOverMapIconService : Service(), ObjectDetectorHelper.DetectorListe
             } else if (event.action == MotionEvent.ACTION_UP) {
                 if (System.currentTimeMillis() - then > 3000) {
                     val say = Speaking(this@FloatingOverMapIconService, "Calling Emergency")
-                    //TODO :: Create the implementation of a emergency message intent
+                    var msg : String = "Help !!!"
+
+                    val smsManager: SmsManager = SmsManager.getDefault()
+
+                    for (phoneNumber in emergency) {
+                        smsManager.sendTextMessage(phoneNumber, null, msg, null, null)
+                    }
+
                     return@OnTouchListener true
                 }
             }

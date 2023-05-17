@@ -54,8 +54,9 @@ public class LogIn extends AppCompatActivity implements TextToSpeech.OnInitListe
                 Toast.makeText(LogIn.this, "Authentication succeeded...!", Toast.LENGTH_SHORT).show();
 
                 // Start new activity
-                Intent intent = new Intent(LogIn.this, SearchOrFreeroam.class);
+                Intent intent = new Intent(LogIn.this, PermissionChecks.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override
