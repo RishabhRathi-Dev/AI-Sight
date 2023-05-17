@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
 
     <application
         android:allowBackup="true"
@@ -30,14 +31,16 @@
             android:foregroundServiceType="camera|microphone"/>
 
         <activity
-            android:name=".PermissionChecks"
+            android:name=".Welcome"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LogIn"
+            android:exported="true" />
         <activity
             android:name=".SearchOrFreeroam"
             android:exported="true" />
