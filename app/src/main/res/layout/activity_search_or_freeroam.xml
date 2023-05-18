@@ -12,7 +12,7 @@
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_margin="20dp"
         android:hint="Enter Destination"
         android:inputType="text|textPostalAddress"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
@@ -26,11 +26,12 @@
 
         <ImageButton
             android:id="@+id/button"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="10dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="8dp"
             android:background="@android:drawable/ic_btn_speak_now"
             android:contentDescription="@android:string/search_go"
@@ -40,14 +41,13 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="8dp"
             android:minWidth="48dp"
-            android:minHeight="100dp"
+            android:minHeight="80dp"
             android:text="@android:string/search_go" />
 
     </LinearLayout>
@@ -57,7 +57,7 @@
         class="com.example.aisight.CameraFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         tools:layout="@layout/fragment_camera"/>
 
 </LinearLayout>
