@@ -16,8 +16,8 @@
             android:layout_width="70dp"
             android:layout_height="100dp"
             android:background="@color/black"
-            android:scaleType="center"
-            android:src="@drawable/common_full_open_on_phone" />
+            android:scaleType="fitXY"
+            android:src="@drawable/img" />
     </LinearLayout>
 
     <androidx.camera.view.PreviewView
