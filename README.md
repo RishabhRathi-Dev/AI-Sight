@@ -1,10 +1,13 @@
 # AI-Sight
 
-## Objective
+## About
 
-The main objective of Composite model is to assist blind person in navigating. The key is to 
-develop and implement such algorithms on a mobile device to enhance the mobility of the 
-user while restricting the expenses.
+AI Sight uses Google's TensorFlow lite under the hood to 
+power the object detection model. Additionally, We are using Google Maps navigation 
+intent to provide navigation support while running the model as a foreground service and 
+delivering alerts about objects in front of the user. This combination of custom alerts 
+along with state of art navigation support from Google Maps create an holistic experience 
+for the blind user
 
 ## Screenshots
 ![Flow Diagram](/screenshots/DataFlowDiagrams-DFD-L1%20final%20report.png)
